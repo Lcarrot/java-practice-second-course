@@ -1,0 +1,8 @@
+# packages #
+*/.idea/
+*/out/
+.git/
+
+# files #
+*.iml
+*.class

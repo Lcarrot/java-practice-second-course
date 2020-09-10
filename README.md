@@ -1,2 +1,2 @@
-# java_practise
+# java_practice
 Repository for Java Homework

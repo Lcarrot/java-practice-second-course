@@ -17,17 +17,25 @@ public class ThreadPool {
     }
 
     public void submit(Runnable task) {
+        addTask(task);
+        giveToThread();
+    }
+
+    private void addTask(Runnable task) {
         synchronized (tasks) {
             tasks.offer(task);
         }
-        boolean dontDo = true;
-        while (dontDo) {
+    }
+
+    private void giveToThread() {
+        boolean dontGiveToThread = true;
+        while (dontGiveToThread) {
             for (PoolWorker worker : threads) {
                 if (worker.getState().equals(Thread.State.WAITING)) {
                     synchronized (worker) {
                         worker.notify();
                     }
-                    dontDo = false;
+                    dontGiveToThread = false;
                     break;
                 }
             }

@@ -1,3 +1,5 @@
+package ru.kpfu.itis.Tyshenko.threads.utils;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -71,5 +73,5 @@ public class ThreadPool {
         }
 
     }
-}
 
+}

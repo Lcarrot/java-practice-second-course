@@ -1,0 +1,10 @@
+javac -d target/ src/java/ru/kpfu/itis/Tyshenko/*/*.java
+javac -d target/ src/java/ru/kpfu/itis/Tyshenko/*/*/*.java
+javac -cp lib/jcommander-1.72.jar -d target/ src/java/*.java
+jar -cvfm downloader.jar src/manifest.txt .
+javac -cp lib/jcommander-1.72.jar -d target -sourcepath src/java src/java/ru/kpfu/itis/Tyshenko/main/*.java
+
+
+
+
+

@@ -1,0 +1,1 @@
+Main-Class: ru.kpfu.itis.Tyshenko.main.Test

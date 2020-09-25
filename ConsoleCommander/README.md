@@ -1,4 +1,4 @@
 # ConsoleCommander
 
-This program may download some files from internet(using thread pool). 
+This program may downloads some files from internet(using thread pool). 
 

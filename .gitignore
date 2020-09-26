@@ -1,9 +1,9 @@
 # packages #
-*/.idea/
+.idea/
 */out/
 .git/
-*/lib/
-*/target/
+.lib/
+.target/
 
 # files #
 *.iml

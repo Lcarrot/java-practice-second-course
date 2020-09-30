@@ -1,7 +1,7 @@
 package ru.kpfu.itis.Tyshenko.downloads;
+import java.nio.file.Path;
 
 public interface Downloading {
 
-    public void download();
-
+    public abstract void download();
 }

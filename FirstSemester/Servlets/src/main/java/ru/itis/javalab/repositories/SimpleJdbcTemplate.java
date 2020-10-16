@@ -1,15 +1,11 @@
 package ru.itis.javalab.repositories;
 
-
-import ru.itis.javalab.entity.User;
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class SimpleJdbcTemplate {
+public class SimpleJdbcTemplate<T> {
 
     DataSource dataSource;
 
@@ -17,19 +13,13 @@ public class SimpleJdbcTemplate {
         this.dataSource = dataSource;
     }
 
-    public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) {
-        Connection connection = null;
+    public List<T> query(String sql, RowMapper<T> rowMapper, Object... args) {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(sql);
-            for (int i = 0; i < args.length; i++) {
-                statement.setString(i+1, Arrays.toString(args));
-            }
-
-            resultSet = statement.executeQuery(sql);
+            statement = doAlways(sql, rowMapper, args);
+            resultSet = statement.executeQuery();
             List<T> result = new ArrayList<>();
             while (resultSet.next()) {
                 result.add(rowMapper.mapRow(resultSet));
@@ -53,14 +43,38 @@ public class SimpleJdbcTemplate {
                     // ignore
                 }
             }
-            if (connection != null) {
+        }
+    }
+
+    private PreparedStatement doAlways(String sql, RowMapper<T> rowMapper, Object... args) throws SQLException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = dataSource.getConnection();
+        statement = connection.prepareStatement(sql);
+        for (int i = 0; i < args.length; i++) {
+            statement.setObject(i + 1, args[i]);
+        }
+        return statement;
+
+    }
+
+    public void queryWithoutResult(String sql, RowMapper<T> rowMapper, Object... args) {
+        PreparedStatement statement = null;
+
+        try {
+            statement = doAlways(sql, rowMapper, args);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            if (statement != null) {
                 try {
-                    connection.close();
+                    statement.close();
                 } catch (SQLException throwables) {
                     // ignore
                 }
             }
         }
     }
-
 }

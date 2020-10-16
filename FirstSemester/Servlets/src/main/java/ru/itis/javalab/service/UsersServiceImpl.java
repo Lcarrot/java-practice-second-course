@@ -7,7 +7,7 @@ import java.util.List;
 
 public class UsersServiceImpl implements UsersService {
 
-    private UsersRepository repository;
+    private final UsersRepository repository;
 
     public UsersServiceImpl(UsersRepository repository) {
         this.repository = repository;
@@ -16,5 +16,15 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public List<User> getAllUsers() {
         return repository.findAll();
+    }
+
+    @Override
+    public List<User> getUserByAuth(String auth) {
+        return repository.findUserByAuth(auth);
+    }
+
+    @Override
+    public void insertUser(User user) {
+        repository.save(user);
     }
 }

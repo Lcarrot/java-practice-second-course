@@ -29,17 +29,10 @@ public class RegistrationServlet extends HttpServlet {
         String last_name = request.getParameter("last_name");
         Integer age = Integer.valueOf(request.getParameter("age"));
         String password = request.getParameter("password");
-        UUID auth_uuid = UUID.randomUUID();
-        String auth = auth_uuid.toString();
-        Cookie cookie = new Cookie("auth", auth);
-
-        int max_age = 60*60*24*365;
-        cookie.setMaxAge(max_age);
-        response.addCookie(cookie);
-
-        User user = User.builder().firstName(name).lastName(last_name).age(age).auth(auth).build();
+        User user = User.builder().firstName(name).lastName(last_name).age(age).password(password).build();
         usersService.insertUser(user);
-        context.getRequestDispatcher("/servlet").forward(request, response);
+        request.getSession().setAttribute("user", user);
+        response.sendRedirect(request.getContextPath() + "/servlet");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -1,0 +1,40 @@
+package ru.itis.Tyshenko.jdbc;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
+
+public class JdbcTemplate {
+
+    private final DataSource dataSource;
+
+    public JdbcTemplate(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public <T> Optional<T> queryForObject(String sql, RowMapper<T> rowMapper, Object ... args) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = getPreparedStatement(connection, sql, args);
+             ResultSet resultSet = statement.executeQuery()){
+                return Optional.of(rowMapper.mapRow(resultSet));
+        }
+    }
+
+    public boolean execute(String sql, Object ... args) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = getPreparedStatement(connection, sql, args)){
+            return !statement.execute();
+        }
+    }
+
+    private PreparedStatement getPreparedStatement(Connection connection, String sql, Object[] args) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(sql);
+        for (int i = 0; i < args.length; i++) {
+            statement.setObject(i+1, args[i]);
+        }
+        return statement;
+    }
+}

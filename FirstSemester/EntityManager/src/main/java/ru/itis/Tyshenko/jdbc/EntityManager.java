@@ -1,19 +1,22 @@
 package ru.itis.Tyshenko.jdbc;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.Optional;
 
 public class EntityManager {
 
-    private final DataSource dataSource;
+    private final JdbcTemplate template;
     private final String TABLE_NAME_PATTERN = "table";
     private final String FIELD_NAME_PATTERN = "fieldsName";
     private final String FIELD_NAME_WITH_TYPE_PATTERN = "fields";
     private final String FIELD_VALUES = "fieldValues";
 
     public EntityManager(DataSource dataSource) {
-        this.dataSource = dataSource;
+        template = new JdbcTemplate(dataSource);
         SQL_CREATE_TABLE = createSourceSqlStatement("create table ",TABLE_NAME_PATTERN," (",FIELD_NAME_WITH_TYPE_PATTERN,");");
         SQL_INSERT = createSourceSqlStatement("insert into", TABLE_NAME_PATTERN," (" ,FIELD_NAME_PATTERN , ") ", "values", " (", FIELD_VALUES, ");");
         SQL_SELECT_BY_ID = createSourceSqlStatement("select ",FIELD_NAME_PATTERN," from", TABLE_NAME_PATTERN, "where id = ?");
@@ -38,7 +41,7 @@ public class EntityManager {
             replacePatternOnValue(builder, FIELD_NAME_WITH_TYPE_PATTERN, getStringFieldsWithTypes(entityClass.getDeclaredFields()));
         }
         try {
-            if (executeStatement(builder.toString())) {
+            if (template.execute(builder.toString())) {
                 throw new IllegalStateException("Statement don't execute");
             }
         } catch (SQLException e) {
@@ -46,7 +49,6 @@ public class EntityManager {
         }
     }
 
-    //language=SQL
     private final String SQL_INSERT;
     public void save(String tableName, Object entity) {
         Field[] fields = entity.getClass().getDeclaredFields();
@@ -65,7 +67,7 @@ public class EntityManager {
             }
         }
         try {
-            if (executeStatement(builder.toString())) {
+            if (template.execute(builder.toString())) {
                 throw new IllegalStateException("Statement don't execute");
             }
         } catch (SQLException e) {
@@ -73,10 +75,8 @@ public class EntityManager {
         }
     }
 
-    // User user = entityManager.findById("account", User.class, Long.class, 10L);
     private final String SQL_SELECT_BY_ID;
-    public <T, ID> T findById(String tableName, Class<T> resultType, Class<ID> idType, ID idValue) {
-        // сгенеририровать select
+    public <T, ID> Optional<T> findById(String tableName, Class<T> resultType, ID idValue) {
         Field[] fields = resultType.getDeclaredFields();
         StringBuilder builder = new StringBuilder();
         if (SQL_SELECT_BY_ID.contains(TABLE_NAME_PATTERN)) {
@@ -85,31 +85,16 @@ public class EntityManager {
         if (SQL_SELECT_BY_ID.contains(FIELD_NAME_PATTERN)) {
             replacePatternOnValue(builder, FIELD_NAME_PATTERN, getStringFields(fields));
         }
-        return null;
-    }
-
-    private boolean executeStatement(String sql, Object ... args) throws SQLException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)){
-            for (int i = 0; i < args.length; i++) {
-                statement.setObject(i, args[i]);
-            }
-            return !statement.execute();
+        RowMapper<T> rowMapper = getRowMapper(resultType);
+        try {
+            return template.queryForObject(SQL_SELECT_BY_ID, rowMapper, idValue);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
-    private <T> T query(String sql, Object ... args) throws SQLException {
-        try (Connection connection = dataSource.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sql)){
-            for (int i = 0; i < args.length; i++) {
-                statement.setObject(i+1, args[i]);
-            }
-            try (ResultSet resultSet = statement.executeQuery()) {
 
-            }
-        }
-        return null;
-    }
+    //Блок для методов низкого уровня абстракции(получение полей и т.д.)
 
     private String getStringFieldsWithTypes(Field[] fields) {
         StringBuilder buildNameWithTypes = new StringBuilder();
@@ -119,6 +104,24 @@ public class EntityManager {
         }
         addFieldWithType(buildNameWithTypes, fields[fields.length - 1]);
         return buildNameWithTypes.toString();
+    }
+
+    private <T> RowMapper<T> getRowMapper(Class<T> resultType) {
+        return result -> {
+            T object;
+            try {
+                Constructor<T> constructor = resultType.getConstructor();
+                object = constructor.newInstance();
+                Field[] fields = object.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    field.set(field.getType(), result.getObject(field.getType().getSimpleName()));
+                }
+            } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+                throw new IllegalArgumentException(e);
+            }
+            return object;
+        };
     }
 
     private void addFieldWithType(StringBuilder builder, Field field) {

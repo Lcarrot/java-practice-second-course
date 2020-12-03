@@ -4,7 +4,7 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
-    private boolean isWorker;
+    private Boolean isWorker;
 
     public User() {
     }
@@ -46,5 +46,15 @@ public class User {
 
     public void setWorker(boolean worker) {
         isWorker = worker;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", isWorker=" + isWorker +
+                '}';
     }
 }

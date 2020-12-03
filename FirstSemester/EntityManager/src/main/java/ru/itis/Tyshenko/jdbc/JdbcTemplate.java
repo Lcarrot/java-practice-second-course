@@ -16,17 +16,18 @@ public class JdbcTemplate {
     }
 
     public <T> Optional<T> queryForObject(String sql, RowMapper<T> rowMapper, Object ... args) throws SQLException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = getPreparedStatement(connection, sql, args);
+        try (PreparedStatement statement = getPreparedStatement(dataSource.getConnection(), sql, args);
              ResultSet resultSet = statement.executeQuery()){
-                return Optional.of(rowMapper.mapRow(resultSet));
+                if (resultSet.next()) {
+                    return Optional.of(rowMapper.mapRow(resultSet));
+                }
         }
+        return Optional.empty();
     }
 
-    public boolean execute(String sql, Object ... args) throws SQLException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = getPreparedStatement(connection, sql, args)){
-            return !statement.execute();
+    public void execute(String sql, Object ... args) throws SQLException {
+        try (PreparedStatement statement = getPreparedStatement(dataSource.getConnection(), sql, args)){
+            statement.execute();
         }
     }
 

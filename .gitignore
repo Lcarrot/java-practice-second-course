@@ -3,8 +3,10 @@
 **/out/
 **/lib/
 **/target/
+**/resources/
 
 # files #
 *.iml
 *.class
 *.jar
+*.properties

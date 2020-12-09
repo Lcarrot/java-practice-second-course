@@ -1,0 +1,23 @@
+body {
+    background-color: aliceblue;
+}
+
+.dark-theme {
+    background-color: black;
+    color: aliceblue;
+}
+
+.light-theme {
+    background: aliceblue;
+    color: black;
+}
+
+.yellow_theme {
+    background-color: yellow;
+    color : black;
+}
+
+.green_theme {
+    background-color: green;
+    color: black;
+}

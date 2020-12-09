@@ -1,5 +1,8 @@
 package ru.itis.Tyshenko.jdbc;
 
+import ru.itis.Tyshenko.converter.FieldToStringConverter;
+import ru.itis.Tyshenko.converter.UnknownFieldTypeException;
+
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -12,8 +15,10 @@ public class EntityManager {
     private final String FIELD_NAME_PATTERN = ":fieldsName";
     private final String FIELD_NAME_WITH_TYPE_PATTERN = ":fields";
     private final String FIELD_VALUES = ":fieldValues";
+    private final FieldToStringConverter converterForDB;
 
     public EntityManager(DataSource dataSource) {
+        converterForDB = new FieldToStringConverter(",", " ");
         template = new JdbcTemplate(dataSource);
         SQL_CREATE_TABLE = createSourceSqlStatement("create table ", TABLE_NAME_PATTERN, " (", FIELD_NAME_WITH_TYPE_PATTERN, ")");
         SQL_INSERT = createSourceSqlStatement("insert into", TABLE_NAME_PATTERN, " (", FIELD_NAME_PATTERN, ") ", "values", " (", FIELD_VALUES, ")");
@@ -32,8 +37,9 @@ public class EntityManager {
 
     public <T> void createTable(String tableName, Class<T> entityClass) {
         try {
-            template.execute(insertValues(SQL_CREATE_TABLE, tableName, entityClass.getDeclaredFields()));
-        } catch (SQLException e) {
+            converterForDB.setFields(entityClass.getDeclaredFields());
+            template.execute(insertValues(SQL_CREATE_TABLE, tableName));
+        } catch (SQLException | UnknownFieldTypeException | IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -42,8 +48,9 @@ public class EntityManager {
 
     public void save(String tableName, Object entity) {
         try {
-            template.execute(insertValues(SQL_INSERT,tableName, entity.getClass().getDeclaredFields(), entity));
-        } catch (SQLException | IllegalAccessException e) {
+            converterForDB.setObject(entity);
+            template.execute(insertValues(SQL_INSERT, tableName));
+        } catch (SQLException | IllegalAccessException | UnknownFieldTypeException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -51,34 +58,29 @@ public class EntityManager {
     private final String SQL_SELECT_BY_ID;
 
     public <T, ID> Optional<T> findById(String tableName, Class<T> resultType, Class<ID> idType, ID idValue) {
-        RowMapper<T> rowMapper = getRowMapper(resultType);
         try {
-            return template.queryForObject(insertValues(SQL_SELECT_BY_ID, tableName, resultType.getDeclaredFields()), rowMapper, idValue);
-        } catch (SQLException e) {
+            converterForDB.setFields(resultType.getDeclaredFields());
+            return template.queryForObject(insertValues(SQL_SELECT_BY_ID, tableName), getRowMapper(resultType), idValue);
+        } catch (SQLException | UnknownFieldTypeException | IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     //Блок методов низкого уровня абстракции(получение полей и т.д.)
 
-    private String insertValues(String sql, String tableName, Field[] fields, Object entity) throws IllegalAccessException {
-        StringBuilder builder = new StringBuilder(insertValues(sql, tableName, fields));
-        if (sql.contains(FIELD_VALUES)) {
-            replacePatternOnValue(builder, FIELD_VALUES, getStringValues(fields, entity));
-        }
-        return builder.toString();
-    }
-
-    private String insertValues(String sql, String tableName, Field[] fields) {
+    private String insertValues(String sql, String tableName) throws UnknownFieldTypeException, IllegalAccessException {
         StringBuilder builder = new StringBuilder(sql);
-        if (sql.contains(TABLE_NAME_PATTERN)) {
+        while (builder.indexOf(TABLE_NAME_PATTERN) != -1) {
             replacePatternOnValue(builder, TABLE_NAME_PATTERN, tableName);
         }
-        if (sql.contains(FIELD_NAME_PATTERN)) {
-            replacePatternOnValue(builder, FIELD_NAME_PATTERN, getStringFieldNames(fields));
+        while (builder.indexOf(FIELD_NAME_PATTERN) != -1) {
+            replacePatternOnValue(builder, FIELD_NAME_PATTERN, converterForDB.getStringFieldNames());
         }
-        if (sql.contains(FIELD_NAME_WITH_TYPE_PATTERN)) {
-            replacePatternOnValue(builder, FIELD_NAME_WITH_TYPE_PATTERN, getStringFieldsWithTypes(fields));
+        while (builder.indexOf(FIELD_NAME_WITH_TYPE_PATTERN) != -1) {
+            replacePatternOnValue(builder, FIELD_NAME_WITH_TYPE_PATTERN, converterForDB.getStringFieldsWithTypes());
+        }
+        while (builder.indexOf(FIELD_VALUES) != -1) {
+            replacePatternOnValue(builder, FIELD_VALUES, converterForDB.getStringObjectValues());
         }
         return builder.toString();
     }
@@ -87,65 +89,6 @@ public class EntityManager {
         int startIndex = builder.indexOf(pattern);
         int endIndex = startIndex + pattern.length();
         builder.replace(startIndex, endIndex, value);
-    }
-
-    private String getStringFieldNames(Field[] fields) {
-        StringBuilder fieldsString = new StringBuilder();
-        for (int i = 0; i < fields.length - 1; i++) {
-            addFieldName(fieldsString, fields[i]);
-            fieldsString.append(",");
-        }
-        addFieldName(fieldsString, fields[fields.length - 1]);
-        return fieldsString.toString();
-    }
-
-    private String getStringFieldsWithTypes(Field[] fields) {
-        StringBuilder buildNameWithTypes = new StringBuilder();
-        for (int i = 0; i < fields.length - 1; i++) {
-            addFieldWithType(buildNameWithTypes, fields[i]);
-            buildNameWithTypes.append(",\n");
-        }
-        addFieldWithType(buildNameWithTypes, fields[fields.length - 1]);
-        return buildNameWithTypes.toString();
-    }
-
-    private String getStringValues(Field[] fields, Object object) throws IllegalAccessException {
-        StringBuilder valuesString = new StringBuilder();
-        for (int i = 0; i < fields.length - 1; i++) {
-            addValue(valuesString, fields[i], object);
-            valuesString.append(",");
-        }
-        addValue(valuesString, fields[fields.length - 1], object);
-        return valuesString.toString();
-    }
-
-    private void addFieldWithType(StringBuilder builder, Field field) {
-        addFieldName(builder, field);
-        builder.append(" ");
-        addFieldType(builder, field);
-    }
-
-    private void addFieldName(StringBuilder builder, Field field) {
-        builder.append(field.getName());
-    }
-
-    private void addFieldType(StringBuilder builder, Field field) {
-        String type = "";
-        if (Long.class.equals(field.getType())) {
-            type = "bigint";
-        } else if (Integer.class.equals(field.getType())) {
-            type = "int";
-        } else if (String.class.equals(field.getType()) || Character.class.equals(field.getType())) {
-            type = "varchar";
-        } else if (Boolean.class.equals(field.getType())) {
-            type = "boolean";
-        }
-        builder.append(type);
-    }
-
-    private void addValue(StringBuilder builder, Field field, Object object) throws IllegalAccessException {
-        field.setAccessible(true);
-        builder.append("'").append(field.get(object)).append("'");
     }
 
     private <T> RowMapper<T> getRowMapper(Class<T> resultType) {

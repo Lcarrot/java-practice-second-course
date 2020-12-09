@@ -1,7 +1,7 @@
 package ru.itis.Tyshenko.entity;
 
 public class User {
-    private Long id;
+    private long id;
     private String firstName;
     private String lastName;
     private Boolean isWorker;

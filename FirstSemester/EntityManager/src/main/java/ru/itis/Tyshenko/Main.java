@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchFieldException {
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream("src/main/resources/db.properties"));
@@ -23,8 +23,9 @@ public class Main {
         EntityManager manager = new EntityManager(dataSource);
         String tableName = "users";
         //manager.createTable(tableName, User.class);
-        //manager.save(tableName ,new User(1L,"a","b",true));
+        manager.save(tableName ,new User(2L,"d","c",true));
         System.out.println(manager.findById(tableName, User.class, Long.class, 1L));
+
     }
 
     private static DataSource getDataSource(Properties properties) {

@@ -29,7 +29,10 @@ public class RegistrationServlet extends HttpServlet {
         String last_name = request.getParameter("last_name");
         Integer age = Integer.valueOf(request.getParameter("age"));
         String password = request.getParameter("password");
-        User user = User.builder().firstName(name).lastName(last_name).age(age).password(password).build();
+        String auth = UUID.randomUUID().toString();
+        Cookie cookie = new Cookie("auth", auth);
+        cookie.setMaxAge(60*60*24*30);
+        User user = User.builder().firstName(name).lastName(last_name).age(age).password(password).auth(auth).build();
         usersService.insertUser(user);
         request.getSession().setAttribute("user", user);
         response.sendRedirect(request.getContextPath() + "/servlet");

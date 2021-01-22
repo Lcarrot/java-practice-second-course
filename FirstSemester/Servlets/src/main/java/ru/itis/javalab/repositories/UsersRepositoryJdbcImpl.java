@@ -42,7 +42,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     @Override
     public void save(User entity) {
         template.queryWithoutResult(SQL_SAVE_USER, userRowMapper, entity.getFirstName(),
-                entity.getLastName(), entity.getAge(), entity.getAuth());
+                entity.getLastName(), entity.getAge());
     }
 
     @Override

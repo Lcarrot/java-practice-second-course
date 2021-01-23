@@ -1,11 +1,13 @@
 package ru.itis.Tyshenko.interceptors;
 
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthInterceptor extends HandlerInterceptorAdapter {
+public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -15,6 +17,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         else {
             response.setStatus(403);
         }
-        return true;
+        return false;
     }
 }

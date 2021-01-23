@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ServletExample", value = "/servlet")
+@WebServlet(name = "ServletExample", value = "/service/profile")
 public class ServletExample extends HttpServlet {
 
     private UsersService usersService;

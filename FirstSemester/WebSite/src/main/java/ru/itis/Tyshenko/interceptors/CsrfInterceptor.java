@@ -1,15 +1,16 @@
 package ru.itis.Tyshenko.interceptors;
 
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
-public class CsrfInterceptor extends HandlerInterceptorAdapter {
+public class CsrfInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        System.out.println("I'm working");
         if (request.getMethod().equals("GET")) {
             return doGet(request);
         }

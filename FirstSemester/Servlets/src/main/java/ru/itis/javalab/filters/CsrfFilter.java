@@ -2,6 +2,7 @@ package ru.itis.javalab.filters;
 
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,9 +20,10 @@ public class CsrfFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         if (request.getMethod().equals("GET")) {
+//            System.out.println(request.getAttribute("_csrf_token"));
             doGet(request, response, filterChain);
         }
-        else if (request.getMethod().equals("POST")) {
+        else {
             doPost(request, response, filterChain);
         }
     }

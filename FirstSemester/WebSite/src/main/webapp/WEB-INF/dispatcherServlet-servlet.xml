@@ -6,10 +6,22 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
-       https://www.springframework.org/schema/context/spring-context.xsd">
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+   http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-    <mvc:annotation-driven/>
+
     <context:component-scan base-package="ru.itis.Tyshenko"/>
+    <mvc:annotation-driven/>
 
-    <bean id="users" class="ru.itis.Tyshenko.controllers.UserController"/>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*"/>
+            <bean class="ru.itis.Tyshenko.interceptors.CsrfInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/service/*"/>
+            <bean class="ru.itis.Tyshenko.interceptors.AuthInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

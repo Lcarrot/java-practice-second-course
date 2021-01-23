@@ -17,6 +17,7 @@
     <input type="text" id="country" name="country">
     <label for="password">password:</label><br>
     <input type="text" id="password" name="password">
+    <input type="hidden" value="${_csrf_token}">
 </form>
 </body>
 </html>

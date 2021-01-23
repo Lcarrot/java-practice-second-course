@@ -30,6 +30,16 @@ public class UserController {
         return "profile";
     }
 
+    @RequestMapping(value = "/signUp", method = RequestMethod.GET)
+    public String SignUpPage() {
+        return "signUp";
+    }
+
+    @RequestMapping(value = "/signIn", method = RequestMethod.GET)
+    public String SignInPage() {
+        return "signIn";
+    }
+
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     @ResponseBody
     public String getUser(HttpServletRequest request, UserDTO userDTO) {

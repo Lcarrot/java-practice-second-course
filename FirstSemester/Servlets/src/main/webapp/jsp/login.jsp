@@ -11,7 +11,7 @@
     <title>Registration</title>
 </head>
 <body>
-<form method="post" action="${pageContext.request.contextPath}/login">
+<form method="post">
     <div class="container">
         <div class="form-group row">
             <label for="name" class="col-sm-2 col-form-label">first name</label>
@@ -20,6 +20,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" value="${_csrf_token}" name="_csrf_token">
     <div class="container">
         <div class="form-group row">
             <label for="last_name" class="col-sm-2 col-form-label">last name</label>

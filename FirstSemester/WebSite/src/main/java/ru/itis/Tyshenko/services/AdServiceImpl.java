@@ -1,5 +1,6 @@
 package ru.itis.Tyshenko.services;
 
+import org.springframework.stereotype.Service;
 import ru.itis.Tyshenko.dto.AdDTO;
 import ru.itis.Tyshenko.entity.Ad;
 import ru.itis.Tyshenko.repositories.posts.AdRepository;
@@ -7,7 +8,7 @@ import ru.itis.Tyshenko.repositories.posts.AdRepository;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class AdServiceImpl implements AdService {
 
     private final AdRepository repository;

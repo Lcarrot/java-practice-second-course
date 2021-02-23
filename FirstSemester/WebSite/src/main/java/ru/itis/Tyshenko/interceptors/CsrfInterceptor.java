@@ -10,7 +10,6 @@ public class CsrfInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        System.out.println("I'm working");
         if (request.getMethod().equals("GET")) {
             return doGet(request);
         }

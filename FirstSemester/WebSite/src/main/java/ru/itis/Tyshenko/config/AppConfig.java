@@ -3,28 +3,32 @@ package ru.itis.Tyshenko.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import freemarker.template.TemplateExceptionHandler;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.ClassRelativeResourceLoader;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.freemarker.SpringTemplateLoader;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
-import ru.itis.Tyshenko.repositories.users.ReflectionUserRepository;
-import ru.itis.Tyshenko.repositories.users.UserRepository;
-import ru.itis.Tyshenko.services.UserService;
-import ru.itis.Tyshenko.services.UserServiceImpl;
 
 import javax.sql.DataSource;
 import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableWebMvc
-@PropertySource("classpath:db.properties")
+@PropertySource("classpath:application.properties")
 @ComponentScan("ru.itis.Tyshenko")
 public class AppConfig {
 
@@ -32,18 +36,8 @@ public class AppConfig {
     private Environment environment;
 
     @Bean
-    public UserService usersService() {
-        return new UserServiceImpl(usersRepository(), passwordEncoder());
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserRepository usersRepository() {
-        return new ReflectionUserRepository(dataSource());
     }
 
     @Bean
@@ -81,6 +75,43 @@ public class AppConfig {
         FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
         configurer.setTemplateLoaderPath("/WEB-INF/ftl/");
         return configurer;
+    }
+
+    @Bean
+    public freemarker.template.Configuration configuration() {
+        freemarker.template.Configuration configuration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_30);
+        configuration.setDefaultEncoding("UTF-8");
+        configuration.setTemplateLoader(
+                new SpringTemplateLoader(new ClassRelativeResourceLoader(this.getClass()),
+                        "/"));
+        configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        return configuration;
+    }
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+        mailSender.setHost(environment.getProperty("spring.mail.host"));
+        mailSender.setPort(Integer.parseInt(Objects.requireNonNull(environment.getProperty("spring.mail.port"))));
+
+        mailSender.setUsername(environment.getProperty("spring.mail.username"));
+        mailSender.setPassword(environment.getProperty("spring.mail.password"));
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.smtp.starttls.enable", environment.getProperty("spring.mail.properties.mail.smtp.starttls.enable"));
+        props.put("mail.smtp.allow8bitmime", environment.getProperty("spring.mail.properties.mail.smtp.allow8bitmime"));
+        props.put("mail.smtp.ssl.trust", environment.getProperty("spring.mail.properties.mail.smtp.ssl.trust"));
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.debug", environment.getProperty("spring.mail.properties.mail.debug"));
+
+        return mailSender;
+    }
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newCachedThreadPool();
     }
 
 }

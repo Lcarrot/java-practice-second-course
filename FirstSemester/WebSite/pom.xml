@@ -15,9 +15,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-version>5.2.12.RELEASE</spring-version>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
     </properties>
 
     <dependencies>
+    <!-- core dependencies -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -76,7 +78,6 @@
             <artifactId>freemarker</artifactId>
             <version>2.3.30</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -87,7 +88,43 @@
             <artifactId>spring-security-core</artifactId>
             <version>5.3.6.RELEASE</version>
         </dependency>
-
+        <!-- logging dependencies -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.1.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-el-api</artifactId>
+            <version>8.5.14</version>
+        </dependency>
     </dependencies>
 
 </project>

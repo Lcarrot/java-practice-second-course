@@ -1,16 +1,35 @@
 package ru.itis.Tyshenko.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import ru.itis.Tyshenko.dto.UserDTO;
 import ru.itis.Tyshenko.entity.User;
 import ru.itis.Tyshenko.repositories.users.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.itis.Tyshenko.util.mail.sender.MailSender;
+import ru.itis.Tyshenko.util.mail.generator.MailsGenerator;
 
 import java.util.Optional;
+import java.util.UUID;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MailsGenerator mailsGenerator;
+
+    @Autowired
+    private MailSender mailSender;
+
+    @Value(value = "${spring.mail.username}")
+    private String userName;
+
+    @Value(value = "${server.url}")
+    private String serverUrl;
 
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -50,10 +69,13 @@ public class UserServiceImpl implements UserService {
         String hashPassword = passwordEncoder.encode(password);
         User user = User.builder().id(null).login(entity.getLogin()).
                 gender(entity.getGender().equals("male")).country(entity.getCountry())
-                .email(entity.getEmail()).hashPassword(hashPassword).build();
+                .email(entity.getEmail()).hashPassword(hashPassword).confirmCode(UUID.randomUUID().toString()).build();
         userRepository.save(user);
         entity.setPassword(hashPassword);
         entity.setId(user.getId());
+
+        String confirmMail = mailsGenerator.generateConfirmEmail(serverUrl, user.getConfirmCode());
+        mailSender.sendEmail(user.getEmail(), userName, "Authorization", confirmMail);
     }
 
     @Override

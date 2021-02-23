@@ -1,5 +1,6 @@
 package ru.itis.Tyshenko.repositories.posts;
 
+import org.springframework.stereotype.Repository;
 import ru.itis.Tyshenko.entity.Ad;
 import ru.itis.Tyshenko.repositories.ReflectionCrudRepository;
 import ru.itis.Tyshenko.repositories.utility.RowMapper;
@@ -9,7 +10,7 @@ import javax.sql.DataSource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public class ReflectionAdRepository extends ReflectionCrudRepository<Ad> implements AdRepository {
     private final String[] fieldNames = {"header", "description", "contact", "price" , "user_id", "resume_id"};
     private final SqlJdbcTemplate<Ad> template;

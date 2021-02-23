@@ -15,4 +15,5 @@ public class User {
     private String country;
     private String hashPassword;
     private Boolean gender;
+    private String confirmCode;
 }

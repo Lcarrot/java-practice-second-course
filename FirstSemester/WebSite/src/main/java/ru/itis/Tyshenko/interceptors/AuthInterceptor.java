@@ -1,7 +1,6 @@
 package ru.itis.Tyshenko.interceptors;
 
 
-
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +13,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (request.getSession().getAttribute("user") != null) {
             return true;
         }
-        else {
-            response.setStatus(403);
-        }
+        response.setStatus(401);
         return false;
     }
 }

@@ -1,5 +1,7 @@
 package ru.itis.Tyshenko.repositories.users;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 import ru.itis.Tyshenko.entity.User;
 import ru.itis.Tyshenko.repositories.ReflectionCrudRepository;
 import ru.itis.Tyshenko.repositories.utility.RowMapper;
@@ -7,7 +9,8 @@ import ru.itis.Tyshenko.repositories.utility.SqlJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.*;
-
+@Repository
+@Profile("master")
 public class ReflectionUserRepository extends ReflectionCrudRepository<User> implements UserRepository {
     private final String[] fieldNames = {"login", "email", "gender", "country", "hashPassword"};
     private final SqlJdbcTemplate<User> template;

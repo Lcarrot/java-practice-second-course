@@ -1,4 +1,4 @@
-package ru.itis.Tyshenko.services;
+package ru.itis.Tyshenko.service;
 
 import ru.itis.Tyshenko.dto.AdDTO;
 

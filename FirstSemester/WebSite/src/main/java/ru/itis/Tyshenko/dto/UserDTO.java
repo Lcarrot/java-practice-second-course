@@ -1,6 +1,9 @@
 package ru.itis.Tyshenko.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.itis.Tyshenko.validation.Password;
 import ru.itis.Tyshenko.validation.UnrepeatableFields;
 
@@ -10,7 +13,7 @@ import javax.validation.constraints.Email;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@UnrepeatableFields(fields = {"country", "gender"}, message = "{sign_up_page.wrong.password}")
+@UnrepeatableFields(message = "{sign_up_page.wrong.equal_fields}", fields = {"country", "gender"})
 public class UserDTO {
 
     public Long id;
@@ -18,7 +21,7 @@ public class UserDTO {
     @Email(message = "{sign_up_page.wrong.email}")
     public String email;
     public String country;
-    @Password(message = "{sign_up_page.wrong.equal_fields}")
+    @Password(message = "{sign_up_page.wrong.password}")
     public String password;
     public String gender;
 }

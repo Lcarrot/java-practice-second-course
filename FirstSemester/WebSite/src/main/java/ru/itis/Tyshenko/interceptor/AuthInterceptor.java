@@ -1,4 +1,4 @@
-package ru.itis.Tyshenko.interceptors;
+package ru.itis.Tyshenko.interceptor;
 
 
 import org.springframework.web.servlet.HandlerInterceptor;

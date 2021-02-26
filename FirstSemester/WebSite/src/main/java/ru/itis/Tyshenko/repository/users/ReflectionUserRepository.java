@@ -1,11 +1,11 @@
-package ru.itis.Tyshenko.repositories.users;
+package ru.itis.Tyshenko.repository.users;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import ru.itis.Tyshenko.entity.User;
-import ru.itis.Tyshenko.repositories.ReflectionCrudRepository;
-import ru.itis.Tyshenko.repositories.utility.RowMapper;
-import ru.itis.Tyshenko.repositories.utility.SqlJdbcTemplate;
+import ru.itis.Tyshenko.repository.ReflectionCrudRepository;
+import ru.itis.Tyshenko.repository.utility.RowMapper;
+import ru.itis.Tyshenko.repository.utility.SqlJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.*;

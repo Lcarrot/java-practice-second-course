@@ -1,4 +1,4 @@
-package ru.itis.Tyshenko.repositories.utility;
+package ru.itis.Tyshenko.repository.utility;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

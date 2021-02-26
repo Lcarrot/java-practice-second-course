@@ -1,4 +1,4 @@
-package ru.itis.Tyshenko.repositories.utility;
+package ru.itis.Tyshenko.repository.utility;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

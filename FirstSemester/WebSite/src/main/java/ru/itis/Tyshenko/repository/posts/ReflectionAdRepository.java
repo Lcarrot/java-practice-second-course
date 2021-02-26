@@ -1,10 +1,10 @@
-package ru.itis.Tyshenko.repositories.posts;
+package ru.itis.Tyshenko.repository.posts;
 
 import org.springframework.stereotype.Repository;
 import ru.itis.Tyshenko.entity.Ad;
-import ru.itis.Tyshenko.repositories.ReflectionCrudRepository;
-import ru.itis.Tyshenko.repositories.utility.RowMapper;
-import ru.itis.Tyshenko.repositories.utility.SqlJdbcTemplate;
+import ru.itis.Tyshenko.repository.ReflectionCrudRepository;
+import ru.itis.Tyshenko.repository.utility.RowMapper;
+import ru.itis.Tyshenko.repository.utility.SqlJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.LinkedList;

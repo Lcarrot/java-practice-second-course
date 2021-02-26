@@ -1,7 +1,6 @@
-package ru.itis.Tyshenko.repositories;
+package ru.itis.Tyshenko.repository;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CrudRepository<T> {
 

@@ -1,11 +1,11 @@
-package ru.itis.Tyshenko.services;
+package ru.itis.Tyshenko.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.itis.Tyshenko.dto.UserDTO;
 import ru.itis.Tyshenko.entity.User;
-import ru.itis.Tyshenko.repositories.users.UserRepository;
+import ru.itis.Tyshenko.repository.users.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itis.Tyshenko.util.mail.sender.MailSender;
 import ru.itis.Tyshenko.util.mail.generator.MailsGenerator;

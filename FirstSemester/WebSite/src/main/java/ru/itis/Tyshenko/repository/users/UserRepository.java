@@ -1,7 +1,7 @@
-package ru.itis.Tyshenko.repositories.users;
+package ru.itis.Tyshenko.repository.users;
 
 import ru.itis.Tyshenko.entity.User;
-import ru.itis.Tyshenko.repositories.CrudRepository;
+import ru.itis.Tyshenko.repository.CrudRepository;
 
 import java.util.Optional;
 

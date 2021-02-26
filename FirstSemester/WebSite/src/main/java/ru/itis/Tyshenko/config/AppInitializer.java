@@ -13,7 +13,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import java.io.IOException;
 
-
 public class AppInitializer implements WebApplicationInitializer {
 
     @Override
@@ -29,6 +28,8 @@ public class AppInitializer implements WebApplicationInitializer {
         springWebContext.getEnvironment().setActiveProfiles((String) propertySource.getProperty("spring.profile"));
 
         springWebContext.register(AppConfig.class);
+        springWebContext.register(LocaleConfig.class);
+        springWebContext.register(WebConfig.class);
         servletContext.addListener(new ContextLoaderListener(springWebContext));
 
         ServletRegistration.Dynamic dispatcherServlet =

@@ -1,8 +1,7 @@
-package ru.itis.Tyshenko.repositories.users;
+package ru.itis.Tyshenko.repository.users;
 
 
 import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import ru.itis.Tyshenko.entity.User;

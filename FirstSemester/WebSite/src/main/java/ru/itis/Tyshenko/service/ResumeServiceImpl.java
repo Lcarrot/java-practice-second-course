@@ -1,9 +1,9 @@
-package ru.itis.Tyshenko.services;
+package ru.itis.Tyshenko.service;
 
 import org.springframework.stereotype.Service;
 import ru.itis.Tyshenko.dto.ResumeDTO;
 import ru.itis.Tyshenko.entity.Resume;
-import ru.itis.Tyshenko.repositories.posts.ResumeRepository;
+import ru.itis.Tyshenko.repository.posts.ResumeRepository;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.itis.Tyshenko.dto.UserDTO;
 import ru.itis.Tyshenko.entity.User;
+import ru.itis.Tyshenko.form.UserForm;
 import ru.itis.Tyshenko.repository.users.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itis.Tyshenko.util.mail.sender.MailSender;
@@ -37,16 +38,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDTO> getByLogin(String login) {
+    public Optional<UserForm> getByLogin(String login) {
         Optional<User> optionalUser = userRepository.getByLogin(login);
-        UserDTO userDTO = null;
+        UserForm userForm = null;
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            userDTO = UserDTO.builder().id(user.getId()).
+            userForm = UserForm.builder().id(user.getId()).
                     country(user.getCountry()).email(user.getEmail())
                     .gender(user.getGender() ? "male" : "female").login(user.getLogin()).password(user.getHashPassword()).build();
         }
-        return Optional.ofNullable(userDTO);
+        return Optional.ofNullable(userForm);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(UserDTO entity, String password) {
+    public void update(UserForm entity, String password) {
         String hashPassword = passwordEncoder.encode(password);
         User user = User.builder().id(entity.getId()).login(entity.getLogin()).
                 gender(entity.getGender().equals("male")).country(entity.getCountry())
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void add(UserDTO entity, String password) {
+    public void add(UserForm entity, String password) {
         String hashPassword = passwordEncoder.encode(password);
         User user = User.builder().id(null).login(entity.getLogin()).
                 gender(entity.getGender().equals("male")).country(entity.getCountry())
@@ -79,11 +80,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDTO> getById(Long id) {
+    public Optional<UserForm> getById(Long id) {
         Optional<User> optionalUser = userRepository.getById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return Optional.of(UserDTO.builder().id(user.getId()).
+            return Optional.of(UserForm.builder().id(user.getId()).
                     country(user.getCountry()).email(user.getEmail())
                     .gender(user.getGender() ? "male" : "female").login(user.getLogin())
                     .password(user.getHashPassword()).build());

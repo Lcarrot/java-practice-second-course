@@ -9,7 +9,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class ResumeDTO {
 
-    public Long id;
     public String header;
     public String description;
     public String contact;

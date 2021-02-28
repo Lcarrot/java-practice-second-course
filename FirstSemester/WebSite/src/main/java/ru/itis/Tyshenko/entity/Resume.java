@@ -2,16 +2,24 @@ package ru.itis.Tyshenko.entity;
 
 import lombok.*;
 
+import javax.persistence.*;
+
 @Builder
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
+@Entity
+@Table
+@NoArgsConstructor
+@Data
 public class Resume {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String header;
     private String description;
     private String contact;
-    private Long user_id;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User user;
+
+
 }

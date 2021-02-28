@@ -1,15 +1,16 @@
 package ru.itis.Tyshenko.service;
 import ru.itis.Tyshenko.dto.UserDTO;
+import ru.itis.Tyshenko.form.UserForm;
 
 import java.util.Optional;
 
 
 public interface UserService {
 
-    Optional<UserDTO> getByLogin(String login);
+    Optional<UserForm> getByLogin(String login);
 
-    void add(UserDTO entity, String password);
-    Optional<UserDTO> getById(Long id);
+    void add(UserForm entity, String password);
+    Optional<UserForm> getById(Long id);
     boolean equalsRowPasswordWithUserPassword(String userHashedPassword, String password);
-    void update(UserDTO entity, String password);
+    void update(UserForm entity, String password);
 }

@@ -28,7 +28,7 @@ public class AppInitializer implements WebApplicationInitializer {
         springWebContext.getEnvironment().setActiveProfiles((String) propertySource.getProperty("spring.profile"));
 
         springWebContext.register(AppConfig.class);
-        springWebContext.register(LocaleConfig.class);
+        springWebContext.register(LocalizationConfig.class);
         springWebContext.register(WebConfig.class);
         servletContext.addListener(new ContextLoaderListener(springWebContext));
 
@@ -38,7 +38,7 @@ public class AppInitializer implements WebApplicationInitializer {
         dispatcherServlet.addMapping("/");
 
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-        characterEncodingFilter.setEncoding("UTF-8");
+        characterEncodingFilter.setEncoding((String) propertySource.getProperty("default_encoding"));
         characterEncodingFilter.setForceEncoding(true);
 
         FilterRegistration.Dynamic filterRegistration = servletContext

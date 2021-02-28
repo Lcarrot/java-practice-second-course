@@ -17,6 +17,7 @@ public class CsrfInterceptor implements HandlerInterceptor {
             return doPost(request);
         }
         return false;
+
     }
 
     private boolean doGet(HttpServletRequest request) {

@@ -16,30 +16,31 @@
 <h1><@spring.message "sign_up_page.registration.title"/></h1>
 <@spring.bind "userDTO"/>
 <form method="post">
-    <label for="login">login:</label>
+    <label for="login"> <@spring.message "login.label"/> </label>
     <br>
     <input type="text" id="login" name="login">
     <br>
-    <label>Email</label>
+    <label> <@spring.message "email.label"/> </label>
     <@spring.formInput "userDTO.email"/>
     <@spring.showErrors "error"/>
     <br>
-    <label for="password">Пароль</label>
+    <label for="password"> <@spring.message "password.label"/> </label>
     <@spring.formPasswordInput "userDTO.password"/>
     <@spring.showErrors "error"/>
     <br>
+    <label> <@spring.message "country.label"/> </label>
     <@spring.formInput "userDTO.country"/>
     <@spring.showErrors "error"/>
     <br>
+    <label> <@spring.message "gender.label"/> </label>
     <@spring.formInput "userDTO.gender"/>
     <@spring.showErrors "error"/>
     <br>
     <input type="hidden" value="${_csrf_token}" name="_csrf_token">
-    <button type="submit"> Отправить</button>
+    <button type="submit"> <@spring.message "button"/></button>
 </form>
 <#if repeatableFields??>
     <p style=".error">${repeatableFields}</p>
 </#if>
-<br>
 </body>
 </html>

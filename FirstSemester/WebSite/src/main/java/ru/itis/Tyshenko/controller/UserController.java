@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.Tyshenko.dto.UserDTO;
+import ru.itis.Tyshenko.form.UserForm;
 import ru.itis.Tyshenko.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ public class UserController {
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public String getUsersPage(HttpServletRequest request, Model model) {
-        model.addAttribute("user", userService.getById(((UserDTO) request.getSession().getAttribute("user")).id).get());
+        model.addAttribute("user", userService.getById(((UserForm) request.getSession().getAttribute("user")).id).get());
         return "profile_page";
     }
 }

@@ -48,7 +48,7 @@ public class AppConfig {
 
         mailSender.setUsername(environment.getProperty("spring.mail.username"));
         mailSender.setPassword(environment.getProperty("spring.mail.password"));
-        mailSender.setDefaultEncoding("UTF-8");
+        mailSender.setDefaultEncoding(environment.getProperty("default_encoding"));
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.starttls.enable", environment.getProperty("spring.mail.properties.mail.smtp.starttls.enable"));

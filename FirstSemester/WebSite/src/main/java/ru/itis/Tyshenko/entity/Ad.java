@@ -1,19 +1,27 @@
 package ru.itis.Tyshenko.entity;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Builder
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
+@Entity
+@Table
+@NoArgsConstructor
+@Data
 public class Ad {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String header;
     private String description;
     private String contact;
     private Long price;
-    private Long user_id;
-    private Long resume_id;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User user;
 }

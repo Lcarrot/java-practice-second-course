@@ -7,13 +7,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import ru.itis.Tyshenko.dto.UserDTO;
+import ru.itis.Tyshenko.form.UserForm;
 import ru.itis.Tyshenko.service.UserService;
 import ru.itis.Tyshenko.util.BindingResultMessages;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -29,7 +28,7 @@ public class SignUpController {
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
-    public String saveNewUser(HttpServletRequest request, @Valid UserDTO user, BindingResult result, Model model) {
+    public String saveNewUser(HttpServletRequest request, @Valid UserForm user, BindingResult result, Model model) {
         Optional<String> error = BindingResultMessages.getMessageFromError(result, "userDTO.UnrepeatableFields");
         if (error.isPresent()) {
             model.addAttribute("userDTO", user);

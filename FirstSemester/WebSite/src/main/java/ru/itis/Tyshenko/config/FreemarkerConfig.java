@@ -10,6 +10,8 @@ import org.springframework.ui.freemarker.SpringTemplateLoader;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import java.util.Objects;
+
 
 @Configuration
 public class FreemarkerConfig {
@@ -29,7 +31,8 @@ public class FreemarkerConfig {
     @Bean
     public FreeMarkerConfigurer freeMarkerConfigurer() {
         FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
-        configurer.setTemplateLoaderPath("/WEB-INF/ftl/");
+        configurer.setTemplateLoaderPath("classpath:/templates");
+        configurer.setDefaultEncoding(Objects.requireNonNull(environment.getProperty("default.encoding")));
         return configurer;
     }
 

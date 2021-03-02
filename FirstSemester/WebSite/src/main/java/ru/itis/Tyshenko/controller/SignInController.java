@@ -24,11 +24,11 @@ public class SignInController {
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     @ResponseBody
     public String getUser(HttpServletRequest request, UserDTO userDTO) {
-        userService.getByLogin(userDTO.login).ifPresent(user -> {
-            if (userService.equalsRowPasswordWithUserPassword(user.password, userDTO.password)) {
-                request.getSession().setAttribute("user", user);
-            }
-        });
+//        userService.getByLogin(userDTO.login).ifPresent(user -> {
+//            if (userService.equalsRowPasswordWithUserPassword(user.password, userDTO.password)) {
+//                request.getSession().setAttribute("user", user);
+//            }
+//        });
         return "profile";
     }
 }

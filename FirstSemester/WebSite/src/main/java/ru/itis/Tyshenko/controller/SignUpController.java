@@ -23,15 +23,16 @@ public class SignUpController {
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
     public String SignUpPage(Model model) {
-        model.addAttribute("userDTO", new UserDTO());
+        model.addAttribute("userForm", new UserForm());
         return "sign_up_page";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public String saveNewUser(HttpServletRequest request, @Valid UserForm user, BindingResult result, Model model) {
-        Optional<String> error = BindingResultMessages.getMessageFromError(result, "userDTO.UnrepeatableFields");
+        Optional<String> error = BindingResultMessages.getMessageFromError(result, "userForm.UnrepeatableFields");
         if (error.isPresent()) {
-            model.addAttribute("userDTO", user);
+            model.addAttribute("repeatableFields", error.get());
+            model.addAttribute("userForm", user);
             return "sign_up_page";
         }
         userService.add(user, user.password);

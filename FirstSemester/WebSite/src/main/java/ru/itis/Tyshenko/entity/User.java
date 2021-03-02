@@ -10,6 +10,7 @@ import java.util.List;
 @Table(name = "account")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,6 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private List<Ad> ads;
 
-    @OneToMany
+    @OneToMany(mappedBy = "owner")
     private List<Resume> resumes;
 }

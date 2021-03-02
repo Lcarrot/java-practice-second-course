@@ -26,9 +26,8 @@ public class ResumeServiceImpl implements ResumeService {
     public void add(ResumeDTO resumeDTO, Long useId) {
         Resume resume = Resume.builder().id(null).header(resumeDTO.getHeader()).
                 description(resumeDTO.description).contact(resumeDTO.contact).
-                user_id(useId).build();
+                build();
         repository.save(resume);
-        resumeDTO.id = resume.getId();
     }
 
     @Override
@@ -39,7 +38,7 @@ public class ResumeServiceImpl implements ResumeService {
             Resume resume = o_resume.get();
             resumeDTO = ResumeDTO.builder().header(resume.getHeader()).
                     description(resume.getDescription()).
-                    contact(resume.getContact()).id(resume.getId()).build();
+                    contact(resume.getContact()).build();
         }
         return Optional.ofNullable(resumeDTO);
     }
@@ -47,7 +46,7 @@ public class ResumeServiceImpl implements ResumeService {
     private List<ResumeDTO> convertToResumeDTO(List<Resume> resumes) {
         List<ResumeDTO> resumeDTOS = new LinkedList<>();
         for (Resume resume: resumes) {
-            ResumeDTO resumeDTO = ResumeDTO.builder().id(resume.getId()).description(resume.getDescription()).
+            ResumeDTO resumeDTO = ResumeDTO.builder().description(resume.getDescription()).
                     contact(resume.getContact()).header(resume.getHeader()).build();
             resumeDTOS.add(resumeDTO);
         }

@@ -6,8 +6,8 @@ import javax.persistence.*;
 
 @Builder
 @Entity
-@Table
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Resume {
 
@@ -19,7 +19,5 @@ public class Resume {
     private String contact;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private User user;
-
-
+    private User owner;
 }

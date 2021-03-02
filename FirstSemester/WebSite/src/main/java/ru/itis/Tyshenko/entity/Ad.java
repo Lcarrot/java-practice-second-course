@@ -1,5 +1,6 @@
 package ru.itis.Tyshenko.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,8 @@ import javax.persistence.*;
 
 @Builder
 @Entity
-@Table
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Ad {
 
@@ -23,5 +24,5 @@ public class Ad {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private User user;
+    private User owner;
 }

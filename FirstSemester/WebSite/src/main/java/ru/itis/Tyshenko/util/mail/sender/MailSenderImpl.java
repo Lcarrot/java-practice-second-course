@@ -27,6 +27,5 @@ public class MailSenderImpl implements MailSender {
             messageHelper.setSubject(subject);
             messageHelper.setText(text, true);
         }));
-
     }
 }

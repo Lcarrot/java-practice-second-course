@@ -6,6 +6,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Interceptor(pathPatterns = "/service/*")
 public class AuthInterceptor implements HandlerInterceptor {
 
     @Override

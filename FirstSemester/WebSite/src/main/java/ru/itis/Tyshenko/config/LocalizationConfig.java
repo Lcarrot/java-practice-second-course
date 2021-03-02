@@ -9,7 +9,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
 public class LocalizationConfig {
@@ -38,12 +37,5 @@ public class LocalizationConfig {
         LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
         factoryBean.setValidationMessageSource(messageSource());
         return factoryBean;
-    }
-
-    @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("lang");
-        return localeChangeInterceptor;
     }
 }

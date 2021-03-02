@@ -24,9 +24,8 @@ public class AdServiceImpl implements AdService {
         Ad ad = Ad.builder().id(null).header(adDTO.getHeader())
                 .description(adDTO.getDescription()).contact(adDTO.getContact())
                 .price(Long.parseLong(adDTO.getPrice()))
-                .user_id(userId).resume_id(0L).build();
+               .build();
         repository.save(ad);
-        adDTO.setId(ad.getId());
     }
 
     @Override
@@ -40,9 +39,9 @@ public class AdServiceImpl implements AdService {
         Optional<Ad> optionalAd = repository.getById(id);
         if (optionalAd.isPresent()) {
             Ad ad = optionalAd.get();
-            return Optional.of(AdDTO.builder().id(ad.getId()).description(ad.getDescription()).
+            return Optional.of(AdDTO.builder().description(ad.getDescription()).
                     contact(ad.getContact()).header(ad.getHeader()).
-                    price(ad.getPrice().toString()).user_id(ad.getUser_id()).build());
+                    price(ad.getPrice().toString()).build());
         }
         return Optional.empty();
     }
@@ -66,9 +65,9 @@ public class AdServiceImpl implements AdService {
     private List<AdDTO> convertAds(List<Ad> ads) {
         List<AdDTO> adDTOS = new LinkedList<>();
         for (Ad ad: ads) {
-            AdDTO adDTO = AdDTO.builder().id(ad.getId()).description(ad.getDescription()).
+            AdDTO adDTO = AdDTO.builder().description(ad.getDescription()).
                     contact(ad.getContact()).header(ad.getHeader()).
-                    price(ad.getPrice().toString()).user_id(ad.getUser_id()).build();
+                    price(ad.getPrice().toString()).build();
             adDTOS.add(adDTO);
         }
         return adDTOS;

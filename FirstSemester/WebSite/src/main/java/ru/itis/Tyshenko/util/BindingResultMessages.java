@@ -13,7 +13,7 @@ public class BindingResultMessages {
         AtomicReference<String> answer = new AtomicReference<>();
         result.getAllErrors()
                 .forEach(objectError -> Arrays.stream(Objects.requireNonNull(objectError.getCodes()))
-                        .filter(error -> error.equals(errorCode)).findAny().ifPresentOrElse(answer::set, () -> answer.set("")));
+                        .filter(error -> error.equals(errorCode)).findAny().ifPresentOrElse(error -> answer.set(objectError.getDefaultMessage()), () -> answer.set("")));
         if (!answer.get().equals("")) {
             return Optional.of(answer.get());
         }

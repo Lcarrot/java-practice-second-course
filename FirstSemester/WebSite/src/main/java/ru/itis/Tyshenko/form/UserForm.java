@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itis.Tyshenko.entity.User;
 import ru.itis.Tyshenko.validation.Password;
 import ru.itis.Tyshenko.validation.UnrepeatableFields;
 
@@ -24,4 +25,10 @@ public class UserForm {
     @Password(message = "{sign_up_page.wrong.password}")
     public String password;
     public String gender;
+
+    public User convertToUser() {
+        return User.builder().id(id).login(login).
+                gender(gender).country(country)
+                .email(email).build();
+    }
 }

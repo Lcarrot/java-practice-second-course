@@ -14,7 +14,7 @@ public class BindingResultMessages {
         result.getAllErrors()
                 .forEach(objectError -> Arrays.stream(Objects.requireNonNull(objectError.getCodes()))
                         .filter(error -> error.equals(errorCode)).findAny().ifPresentOrElse(error -> answer.set(objectError.getDefaultMessage()), () -> answer.set("")));
-        if (!answer.get().equals("")) {
+        if (answer.get() != null) {
             return Optional.of(answer.get());
         }
         return Optional.empty();

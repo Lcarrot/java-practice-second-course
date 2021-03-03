@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import ru.itis.Tyshenko.dto.UserDTO;
 import ru.itis.Tyshenko.form.UserForm;
 import ru.itis.Tyshenko.service.UserService;
 import ru.itis.Tyshenko.util.BindingResultMessages;
@@ -35,8 +34,8 @@ public class SignUpController {
             model.addAttribute("userForm", user);
             return "sign_up_page";
         }
-        userService.add(user, user.password);
+        userService.add(user);
         request.getSession().setAttribute("user", user);
-        return "redirect:/profile_page";
+        return "redirect:/profile";
     }
 }

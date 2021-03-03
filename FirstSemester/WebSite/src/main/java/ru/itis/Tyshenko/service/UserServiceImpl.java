@@ -2,19 +2,20 @@ package ru.itis.Tyshenko.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.itis.Tyshenko.dto.UserDTO;
+import ru.itis.Tyshenko.dto.UserDto;
 import ru.itis.Tyshenko.entity.User;
 import ru.itis.Tyshenko.form.UserForm;
-import ru.itis.Tyshenko.repository.users.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.itis.Tyshenko.util.mail.sender.MailSender;
+import ru.itis.Tyshenko.repository.UserRepository;
 import ru.itis.Tyshenko.util.mail.generator.MailsGenerator;
+import ru.itis.Tyshenko.util.mail.sender.MailSender;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
+@Profile("master")
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -38,41 +39,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserForm> getByLogin(String login) {
+    public Optional<UserDto> getByLogin(String login) {
         Optional<User> optionalUser = userRepository.getByLogin(login);
-        UserForm userForm = null;
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            userForm = UserForm.builder().id(user.getId()).
-                    country(user.getCountry()).email(user.getEmail())
-                    .gender(user.getGender() ? "male" : "female").login(user.getLogin()).password(user.getHashPassword()).build();
-        }
-        return Optional.ofNullable(userForm);
+        return optionalUser.map(UserDto::convertFromUser);
     }
 
     @Override
-    public boolean equalsRowPasswordWithUserPassword(String password, String user_hashPassword) {
-        return passwordEncoder.matches(password, user_hashPassword);
+    public void update(UserForm before,UserForm now) {
+        User userBefore = before.convertToUser();
+        userBefore.setHashPassword(passwordEncoder.encode(before.password));
+        userRepository.delete(userBefore);
+        User nowUser = now.convertToUser();
+        nowUser.setHashPassword(passwordEncoder.encode(now.password));
+        userRepository.delete(userBefore);
+        userRepository.save(nowUser);
     }
 
     @Override
-    public void update(UserForm entity, String password) {
-        String hashPassword = passwordEncoder.encode(password);
-        User user = User.builder().id(entity.getId()).login(entity.getLogin()).
-                gender(entity.getGender().equals("male")).country(entity.getCountry())
-                .email(entity.getEmail()).hashPassword(hashPassword).build();
-        userRepository.update(user);
-        entity.setPassword(hashPassword);
-    }
-
-    @Override
-    public void add(UserForm entity, String password) {
-        String hashPassword = passwordEncoder.encode(password);
-        User user = User.builder().id(null).login(entity.getLogin()).
-                gender(entity.getGender().equals("male")).country(entity.getCountry())
-                .email(entity.getEmail()).hashPassword(hashPassword).confirmCode(UUID.randomUUID().toString()).build();
+    public void add(UserForm entity) {
+        User user = entity.convertToUser();
+        user.setHashPassword(entity.password);
         userRepository.save(user);
-        entity.setPassword(hashPassword);
         entity.setId(user.getId());
 
         String confirmMail = mailsGenerator.generateConfirmEmail(serverUrl, user.getConfirmCode());
@@ -80,15 +67,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserForm> getById(Long id) {
+    public Optional<UserDto> getById(Long id) {
         Optional<User> optionalUser = userRepository.getById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return Optional.of(UserForm.builder().id(user.getId()).
-                    country(user.getCountry()).email(user.getEmail())
-                    .gender(user.getGender() ? "male" : "female").login(user.getLogin())
-                    .password(user.getHashPassword()).build());
-        }
-        return Optional.empty();
+        return optionalUser.map(UserDto::convertFromUser);
     }
 }

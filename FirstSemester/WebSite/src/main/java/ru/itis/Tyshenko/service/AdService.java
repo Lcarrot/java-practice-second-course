@@ -1,15 +1,15 @@
 package ru.itis.Tyshenko.service;
 
-import ru.itis.Tyshenko.dto.AdDTO;
+import ru.itis.Tyshenko.dto.AdDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AdService {
 
-    void add(AdDTO adDTO, Long useId);
-    List<AdDTO> getAll();
-    Optional<AdDTO> getById(Long id);
-    List<AdDTO> getAllByUserID(Long user_id);
-    Optional<List<AdDTO>> getAllByResumeId(Long resume_id);
+    void add(AdDto adDTO, Long useId);
+    List<AdDto> getAll();
+    Optional<AdDto> getById(Long id);
+    List<AdDto> getAllByUserID(Long user_id);
+    Optional<List<AdDto>> getAllByResumeId(Long resume_id);
 }

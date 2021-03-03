@@ -19,7 +19,7 @@ public class User {
     private String email;
     private String country;
     private String hashPassword;
-    private Boolean gender;
+    private String gender;
     private String confirmCode;
 
     @OneToMany(mappedBy = "owner")

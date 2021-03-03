@@ -2,7 +2,7 @@ package ru.itis.Tyshenko.interceptor;
 
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
-@Interceptor(pathPatterns = "/*")
+@Interceptor(pathPatterns = "/*", order = 1)
 public class MyLocaleChangeInterceptor extends LocaleChangeInterceptor {
 
     public MyLocaleChangeInterceptor() {

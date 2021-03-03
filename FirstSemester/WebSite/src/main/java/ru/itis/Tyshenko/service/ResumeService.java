@@ -1,13 +1,13 @@
 package ru.itis.Tyshenko.service;
 
-import ru.itis.Tyshenko.dto.ResumeDTO;
+import ru.itis.Tyshenko.dto.ResumeDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ResumeService {
 
-    List<ResumeDTO> getAll();
-    void add(ResumeDTO resumeDTO, Long useId);
-    Optional<ResumeDTO> getByUserId(Long UserId);
+    List<ResumeDto> getAll();
+    void add(ResumeDto resumeDTO, Long useId);
+    Optional<ResumeDto> getByUserId(Long UserId);
 }

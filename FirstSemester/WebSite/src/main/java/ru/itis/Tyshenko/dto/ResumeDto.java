@@ -7,9 +7,9 @@ import lombok.*;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class AdDTO {
+public class ResumeDto {
+
     public String header;
     public String description;
     public String contact;
-    public String price;
 }

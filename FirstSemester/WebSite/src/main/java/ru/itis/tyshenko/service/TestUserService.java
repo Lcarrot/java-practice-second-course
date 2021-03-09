@@ -48,4 +48,9 @@ public class TestUserService implements UserService{
         return Optional.of(UserDto.builder().login("leo")
                 .country("Russia").gender("helicopter").build());
     }
+
+    @Override
+    public Optional<UserDto> confirmRegistration(String code) {
+        return Optional.empty();
+    }
 }

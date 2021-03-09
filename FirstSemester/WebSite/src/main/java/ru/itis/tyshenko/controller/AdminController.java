@@ -21,17 +21,12 @@ public class AdminController {
         return "admin_signIn_page";
     }
 
-    @PostMapping("admin/signIn")
+    @PostMapping("/admin/signIn")
     public String checkSignIn(AdminForm adminForm) {
         Optional<AdminDto> adminDto = adminService.authenticate(adminForm);
         if (adminDto.isPresent()) {
-            return "admin_page_lists";
+            return "cms_list";
         }
-        return "redirect:/admin/lists";
-    }
-
-    @GetMapping("admin/lists")
-    public String getPageLists() {
-        return "admin_page_lists";
+        return "redirect:/admin/cmsList";
     }
 }

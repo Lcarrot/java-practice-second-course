@@ -3,7 +3,6 @@
 **/out/
 **/lib/
 **/target/
-**/resources/
 
 # files #
 *.iml

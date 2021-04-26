@@ -1,6 +1,8 @@
 package ru.itis.Tyshenko.entity;
 
+
 public class User {
+
     private long id;
     private String firstName;
     private String lastName;

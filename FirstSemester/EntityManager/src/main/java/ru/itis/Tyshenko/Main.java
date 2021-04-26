@@ -2,6 +2,7 @@ package ru.itis.Tyshenko;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import ru.itis.Tyshenko.converter.PostgreSQL;
 import ru.itis.Tyshenko.entity.User;
 import ru.itis.Tyshenko.jdbc.EntityManager;
 
@@ -20,7 +21,7 @@ public class Main {
             throw new IllegalStateException(e);
         }
         DataSource dataSource = getDataSource(properties);
-        EntityManager manager = new EntityManager(dataSource);
+        EntityManager manager = new EntityManager(dataSource, new PostgreSQL());
         String tableName = "users";
         //manager.createTable(tableName, User.class);
         manager.save(tableName ,new User(2L,"d","c",true));

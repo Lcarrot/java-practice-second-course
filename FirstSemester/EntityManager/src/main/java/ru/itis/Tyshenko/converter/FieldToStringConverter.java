@@ -8,29 +8,31 @@ public class FieldToStringConverter {
 
     private final String separatorBetweenFields;
     private final String separatorBetweenTypeAndValue;
-    private final DataBase dataBase;
+    private final IDatabase dataBase;
 
-    public FieldToStringConverter(DataBase dataBase) {
+    public FieldToStringConverter(IDatabase dataBase) {
         this.separatorBetweenFields = dataBase.getSeparatorBetweenValues();
         this.separatorBetweenTypeAndValue = dataBase.getSeparatorBetweenValueAndType();
         this.dataBase = dataBase;
     }
 
-    public String addValuesInSqlStatement(boolean hasType, Field[] fields) {
+    public String addValuesInSqlStatement(InsertType type, Field[] fields) {
         try {
-            Method method = getMethod(hasType);
+            Method method = getMethod(type);
             return getStringFields(method, fields);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException(e);
         }
     }
 
-
-    private Method getMethod(boolean hasType) throws NoSuchMethodException {
-        if (hasType) {
-            return this.getClass().getMethod("addFieldWithType", StringBuilder.class, Field.class);
+    private Method getMethod(InsertType hasType) throws NoSuchMethodException {
+        if (hasType.equals(InsertType.WITH_TYPE)) {
+            return this.getClass().getDeclaredMethod("addFieldWithType", StringBuilder.class, Field.class);
         }
-        return this.getClass().getMethod("addFieldName", StringBuilder.class, Field.class);
+        else if (hasType.equals(InsertType.WITHOUT_TYPE)) {
+            return this.getClass().getDeclaredMethod("addFieldName", StringBuilder.class, Field.class);
+        }
+        return this.getClass().getDeclaredMethod("addFieldAsParameter", StringBuilder.class, Field.class);
     }
 
     private String getStringFields(Method method, Field[] fields) throws InvocationTargetException, IllegalAccessException {
@@ -60,6 +62,11 @@ public class FieldToStringConverter {
         addFieldType(builder, field);
     }
 
+    private void addFieldAsParameter(StringBuilder builder, Field field) {
+        addFieldName(builder, field);
+        builder.append(" = ").append("?");
+    }
+
     private void addFieldName(StringBuilder builder, Field field) {
         builder.append(field.getName());
     }
@@ -71,5 +78,11 @@ public class FieldToStringConverter {
     private void addValue(StringBuilder builder, Object object, Field field) throws IllegalAccessException {
         field.setAccessible(true);
         builder.append("'").append(field.get(object)).append("'");
+    }
+
+    public static enum InsertType{
+        WITH_TYPE,
+        WITHOUT_TYPE,
+        AS_PARAMETERS
     }
 }

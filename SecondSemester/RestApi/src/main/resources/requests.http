@@ -1,3 +1,14 @@
-GET http://localhost:8080/api/item?id=99
+POST http://localhost:8080/login
+Content-Type: application/json
 
+{
+  "email": "am@ma.ru",
+  "password": "wasd"
+}
+
+###
+
+GET http://localhost:8080/user/1
+REFRESH-TOKEN: ee31fe86-e920-4832-8bbb-f05735075c9d
+ACCESS-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbUBtYS5ydSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTYyMDMzODY4MX0.z0T71JcCoO1u3vBRohWiIeXAjhD4gzrHniVe3_SeRtA
 ###

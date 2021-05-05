@@ -1,18 +1,16 @@
 package ru.itis.tyshenko.rest.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
-@Table(catalog = "account")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "account")
 public class User {
 
     @Id
@@ -21,4 +19,12 @@ public class User {
     private String login;
     private String email;
     private Integer age;
+    private String hashPassword;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private RefreshToken token;
 }
+
+

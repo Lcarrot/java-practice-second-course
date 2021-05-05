@@ -1,10 +1,12 @@
-package ru.itis.Tyshenko.jdbc;
+package ru.itis.Tyshenko.jdbc.template;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 public class JdbcTemplate {
@@ -15,7 +17,7 @@ public class JdbcTemplate {
         this.dataSource = dataSource;
     }
 
-    public <T> Optional<T> queryForObject(String sql, RowMapper<T> rowMapper, Object ... args) throws SQLException {
+    public <T> Optional<T> queryForObject(String sql, CustomRowMapper<T> rowMapper, Object ... args) throws SQLException {
         try (PreparedStatement statement = getPreparedStatement(dataSource.getConnection(), sql, args);
              ResultSet resultSet = statement.executeQuery()){
                 if (resultSet.next()) {
@@ -29,6 +31,17 @@ public class JdbcTemplate {
         try (PreparedStatement statement = getPreparedStatement(dataSource.getConnection(), sql, args)){
             statement.execute();
         }
+    }
+
+    public <T> List<T> query(String sql, CustomRowMapper<T> rowMapper, Object ... args) throws SQLException {
+        List<T> list = new LinkedList<>();
+        try (PreparedStatement statement = getPreparedStatement(dataSource.getConnection(), sql, args);
+             ResultSet resultSet = statement.executeQuery()){
+            if (resultSet.next()) {
+                list.add(rowMapper.mapRow(resultSet));
+            }
+        }
+        return list;
     }
 
     private PreparedStatement getPreparedStatement(Connection connection, String sql, Object[] args) throws SQLException {

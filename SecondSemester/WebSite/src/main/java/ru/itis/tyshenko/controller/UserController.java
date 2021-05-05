@@ -28,11 +28,10 @@ public class UserController {
         return "profile_page";
     }
 
-    @GetMapping(value = "/confirm")
-    public String confirmRegistration(HttpServletRequest request, @Param("code") String code) {
-        Optional<UserDto> userDto = userService.confirmRegistration(code);
+    @GetMapping(value = "/confirm/{code}")
+    public String confirmRegistration(Principal principal, @PathVariable("code") String code) {
+        Optional<UserDto> userDto = userService.confirmRegistration(code, principal);
         if (userDto.isPresent()) {
-            request.getSession().setAttribute("user", userDto.get());
             return "redirect:/profile";
         }
         return "redirect:/signUp";

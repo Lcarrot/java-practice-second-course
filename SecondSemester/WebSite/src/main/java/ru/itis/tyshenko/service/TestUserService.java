@@ -8,6 +8,7 @@ import ru.itis.tyshenko.dto.UserDto;
 import ru.itis.tyshenko.form.SignUpUserForm;
 import ru.itis.tyshenko.mail.generator.MailsGenerator;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -60,7 +61,7 @@ public class TestUserService implements UserService{
     }
 
     @Override
-    public Optional<UserDto> confirmRegistration(String code) {
+    public Optional<UserDto> confirmRegistration(String code, Principal principal) {
         return Optional.empty();
     }
 }

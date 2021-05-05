@@ -1,9 +1,9 @@
-package ru.itis.Tyshenko.jdbc;
+package ru.itis.Tyshenko.jdbc.template;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public interface RowMapper<T> {
+public interface CustomRowMapper<T> {
 
     T mapRow(ResultSet resultSet) throws SQLException;
 }

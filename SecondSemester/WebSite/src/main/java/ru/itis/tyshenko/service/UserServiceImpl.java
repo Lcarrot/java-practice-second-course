@@ -1,7 +1,10 @@
 package ru.itis.tyshenko.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.itis.tyshenko.annotation.ConvertField;
@@ -14,6 +17,7 @@ import ru.itis.tyshenko.util.ReflectionConverter;
 import ru.itis.tyshenko.mail.generator.MailsGenerator;
 import ru.itis.tyshenko.mail.sender.MailSender;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,8 +37,8 @@ public class UserServiceImpl implements UserService {
     @Value(value = "${server.url}")
     private String serverUrl;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, MailsGenerator mailsGenerator, MailSender mailSender, ReflectionConverter converter)
-    {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                           MailsGenerator mailsGenerator, MailSender mailSender, ReflectionConverter converter) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailsGenerator = mailsGenerator;
@@ -49,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> getByEmail(String email) {
-        return  userRepository.getByEmail(email).map(this::convertFromEntityToDto);
+        return userRepository.getByEmail(email).map(this::convertFromEntityToDto);
     }
 
     @Override
@@ -73,14 +77,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> confirmRegistration(String code) {
+    public Optional<UserDto> confirmRegistration(String code, Principal principal) {
         Optional<User> opUser = userRepository.findByConfirmCode(code);
         if (opUser.isPresent()) {
             User user = opUser.get();
-            userRepository.delete(user);
-            opUser.get().setConfirmed(true);
-            userRepository.save(user);
-            return Optional.of(convertFromEntityToDto(opUser.get()));
+            if (user.getEmail().equals(principal.getName())) {
+                userRepository.delete(user);
+                user.setConfirmed(true);
+                userRepository.save(user);
+                return Optional.of(convertFromEntityToDto(user));
+            }
         }
         return Optional.empty();
     }

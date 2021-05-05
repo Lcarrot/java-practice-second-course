@@ -1,5 +1,6 @@
 package ru.itis.tyshenko.controller;
 
+import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import ru.itis.tyshenko.form.SignUpUserForm;
 import ru.itis.tyshenko.service.UserService;
 import ru.itis.tyshenko.util.BindingResultMessages;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -33,8 +35,9 @@ public class SignUpController {
         return "sign_up_page";
     }
 
+    @SneakyThrows
     @PostMapping
-    public String saveNewUser(@Valid SignUpUserForm user, BindingResult result, Model model) {
+    public String saveNewUser(@Valid SignUpUserForm user, BindingResult result, Model model, HttpServletRequest request) {
         Optional<String> error = bindingResultMessages.getMessageFromError(result, "userForm.UnrepeatableFields");
         if (error.isPresent()) {
             model.addAttribute("repeatableFields", error.get());
@@ -42,6 +45,7 @@ public class SignUpController {
             return "sign_up_page";
         }
         userService.add(user);
+        request.login(user.getEmail(), user.getPassword());
         return "redirect:/profile";
     }
 }

@@ -16,6 +16,6 @@
 <body>
 <h1>Прошу проймти по мсмсылке:</h1>
 <img src="https://i.ytimg.com/vi/33yzHbxGn0M/maxresdefault.jpg" alt="">
-<h2><a href="${server_url}/confirm?code=${confirm_code}">Пройдите по ссылке, пожалуйсмста</a></h2>
+<h2><a href="${server_url}/confirm/${confirm_code}">Пройдите по ссылке, пожалуйсмста</a></h2>
 </body>
 </html>

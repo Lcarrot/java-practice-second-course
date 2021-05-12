@@ -1,4 +1,4 @@
-package ru.itis.tyshenko.rest.security.jwt;
+package ru.itis.tyshenko.rest.security.token;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

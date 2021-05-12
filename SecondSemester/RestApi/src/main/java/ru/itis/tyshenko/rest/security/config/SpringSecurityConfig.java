@@ -12,9 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.itis.tyshenko.rest.security.jwt.AccessTokenAuthFilter;
-import ru.itis.tyshenko.rest.security.jwt.AccessTokenAuthenticationProvider;
-import ru.itis.tyshenko.rest.security.jwt.RefreshTokenAuthFilter;
+import ru.itis.tyshenko.rest.security.token.AccessTokenAuthFilter;
+import ru.itis.tyshenko.rest.security.token.AccessTokenAuthenticationProvider;
+import ru.itis.tyshenko.rest.security.token.RefreshTokenAuthFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +39,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(refreshTokenAuthFilter, AccessTokenAuthFilter.class)
                 .authorizeRequests()
                 .antMatchers("/login/**").permitAll()
-                .antMatchers("/user/**").authenticated();
+                .antMatchers("/user/**").hasAuthority("ADMIN")
+                .antMatchers("/update/**").authenticated();
     }
 
     @Override

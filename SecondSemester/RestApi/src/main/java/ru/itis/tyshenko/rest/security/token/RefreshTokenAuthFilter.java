@@ -1,12 +1,11 @@
-package ru.itis.tyshenko.rest.security.jwt;
+package ru.itis.tyshenko.rest.security.token;
 
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.itis.tyshenko.rest.dto.SecurityDto;
+import ru.itis.tyshenko.rest.dto.RefreshTokenDto;
 import ru.itis.tyshenko.rest.service.TokenService;
 
 import javax.servlet.FilterChain;
@@ -30,14 +29,18 @@ public class RefreshTokenAuthFilter extends OncePerRequestFilter {
         AccessTokenAuthentication accessTokenAuthentication =
                 (AccessTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         if (accessTokenAuthentication != null) {
-            Optional<SecurityDto> token = tokenService.getRefreshToken(request.getHeader("REFRESH-TOKEN"));
+            Optional<RefreshTokenDto> token = tokenService.getRefreshToken(request.getHeader("REFRESH-TOKEN"));
             if (token.isPresent()) {
                 if (token.get().getExpiredTime().compareTo(new Date()) < 0) {
-                   throw new UsernameNotFoundException("refresh token is expired");
+                   response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                   response.getWriter().write("refresh token is expired \n");
+                   return;
                 }
                 log.log(Level.INFO, "refresh token is valid");
             } else {
-                throw new UsernameNotFoundException("refresh token isn't valid");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("refresh token didn't found");
+                return;
             }
         }
         filterChain.doFilter(request, response);

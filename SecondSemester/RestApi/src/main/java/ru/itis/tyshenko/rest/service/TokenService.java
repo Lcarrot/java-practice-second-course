@@ -1,5 +1,7 @@
 package ru.itis.tyshenko.rest.service;
 
+import ru.itis.tyshenko.rest.dto.AccessTokenDto;
+import ru.itis.tyshenko.rest.dto.RefreshTokenDto;
 import ru.itis.tyshenko.rest.dto.SecurityDto;
 import ru.itis.tyshenko.rest.form.LoginForm;
 
@@ -9,7 +11,9 @@ public interface TokenService {
 
     Optional<SecurityDto> login(LoginForm loginForm);
 
-    Optional<SecurityDto> refresh(String refreshToken);
+    Optional<RefreshTokenDto> getRefreshToken(String string);
 
-    Optional<SecurityDto> getRefreshToken(String string);
+    Optional<RefreshTokenDto> updateRefreshToken(String refreshToken);
+
+    Optional<AccessTokenDto> updateAccessToken(String refreshToken);
 }

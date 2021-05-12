@@ -2,6 +2,9 @@ package ru.itis.Tyshenko.jdbc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import ru.itis.Tyshenko.converter.IDatabase;
+import ru.itis.Tyshenko.jdbc.criteria.CriteriaBuilder;
+import ru.itis.Tyshenko.jdbc.criteria.SqlExpression;
 import ru.itis.Tyshenko.jdbc.database.Database;
 import ru.itis.Tyshenko.jdbc.database.PostgresqlDatabase;
 
@@ -16,7 +19,7 @@ public class EntityManager {
     public EntityManager(Properties properties) {
         String driver = (String) properties.get("db.driver.classname");
         DataSource dataSource = getDataSource(properties);
-        database = getDatabase(driver, dataSource);
+        database = findDatabase(driver, dataSource);
     }
 
     public <T> void createTable(String tableName, Class<T> entityClass) {
@@ -31,6 +34,10 @@ public class EntityManager {
         return database.findById(tableName, resultType, idType, idValue);
     }
 
+    public <T> Optional<T> find(String tableName, SqlExpression expression, String puk) {
+        return Optional.empty();
+    }
+
     private DataSource getDataSource(Properties properties) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(properties.getProperty("db.url"));
@@ -41,10 +48,18 @@ public class EntityManager {
         return new HikariDataSource(config);
     }
 
-    private Database getDatabase(String driver, DataSource dataSource) {
+    private Database findDatabase(String driver, DataSource dataSource) {
         if (driver.contains("postgres")) {
             return new PostgresqlDatabase(dataSource);
         }
         throw new IllegalArgumentException();
+    }
+
+    public IDatabase getDatabase() {
+        return database.getType();
+    }
+
+    public <T> CriteriaBuilder<T> getCriteriaBuilderForObject(T object, String tableName) {
+        return new CriteriaBuilder<>(this, object, tableName);
     }
 }

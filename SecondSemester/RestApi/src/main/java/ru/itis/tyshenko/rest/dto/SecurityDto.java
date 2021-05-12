@@ -16,5 +16,6 @@ public class SecurityDto {
 
     private String refreshToken;
     private String accessToken;
-    private Date expiredTime;
+    private Date refreshTokenExpiredTime;
+    private Date accessTokenExpiredTime;
 }

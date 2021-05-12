@@ -1,4 +1,4 @@
-package ru.itis.tyshenko.rest.security.jwt;
+package ru.itis.tyshenko.rest.security.token;
 
 import lombok.extern.java.Log;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +21,7 @@ public class AccessTokenAuthFilter extends OncePerRequestFilter {
         String token = httpServletRequest.getHeader("ACCESS-TOKEN");
         if (token != null) {
             AccessTokenAuthentication accessTokenAuthentication = new AccessTokenAuthentication(token);
+
             SecurityContextHolder.getContext().setAuthentication(accessTokenAuthentication);
             log.log(Level.INFO, "set auth in context");
         }

@@ -1,6 +1,6 @@
 package ru.itis.Tyshenko.jdbc.database;
 
-import ru.itis.Tyshenko.converter.IDatabase;
+import ru.itis.Tyshenko.converter.DatabaseType;
 import ru.itis.Tyshenko.converter.UnknownFieldTypeException;
 
 import javax.sql.DataSource;
@@ -39,7 +39,7 @@ public class PostgresqlDatabase extends ru.itis.Tyshenko.jdbc.database.Database 
         return findById(tableName, resultType, idType, idValue, SQL_SELECT_BY_ID);
     }
 
-    public static class PostgreSQL implements IDatabase {
+    public static class PostgreSQL implements DatabaseType {
         public String addFieldType(Field field) throws UnknownFieldTypeException {
             String type;
             if (Long.class.equals(field.getType())) {

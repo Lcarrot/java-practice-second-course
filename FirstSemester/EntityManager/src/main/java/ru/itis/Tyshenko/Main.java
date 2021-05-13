@@ -1,15 +1,9 @@
 package ru.itis.Tyshenko;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import ru.itis.Tyshenko.entity.User;
 import ru.itis.Tyshenko.jdbc.EntityManager;
-import ru.itis.Tyshenko.jdbc.database.PostgresqlDatabase;
-
-import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Properties;
 
 public class Main {

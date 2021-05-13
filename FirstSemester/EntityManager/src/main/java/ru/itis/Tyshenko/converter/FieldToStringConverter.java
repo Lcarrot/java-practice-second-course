@@ -8,9 +8,9 @@ public class FieldToStringConverter {
 
     private final String separatorBetweenFields;
     private final String separatorBetweenTypeAndValue;
-    private final IDatabase dataBase;
+    private final DatabaseType dataBase;
 
-    public FieldToStringConverter(IDatabase dataBase) {
+    public FieldToStringConverter(DatabaseType dataBase) {
         this.separatorBetweenFields = dataBase.getSeparatorBetweenValues();
         this.separatorBetweenTypeAndValue = dataBase.getSeparatorBetweenValueAndType();
         this.dataBase = dataBase;

@@ -2,17 +2,19 @@ package ru.itis.Tyshenko.jdbc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import ru.itis.Tyshenko.converter.IDatabase;
 import ru.itis.Tyshenko.jdbc.criteria.CriteriaBuilder;
-import ru.itis.Tyshenko.jdbc.criteria.SqlExpression;
+import ru.itis.Tyshenko.jdbc.criteria.Query;
+import ru.itis.Tyshenko.jdbc.criteria.Root;
 import ru.itis.Tyshenko.jdbc.database.Database;
+import ru.itis.Tyshenko.jdbc.database.Manager;
 import ru.itis.Tyshenko.jdbc.database.PostgresqlDatabase;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-public class EntityManager {
+public class EntityManager implements Manager {
 
     private final Database database;
 
@@ -26,16 +28,22 @@ public class EntityManager {
         database.createTable(tableName, entityClass);
     }
 
+    @Override
+    public <T> List<T> findAll(String table, Class<T> entityClass) {
+        return database.findAll(table, entityClass);
+    }
+
+    @Override
+    public <T> List<T> find(String tableName, Class<T> tClass, String sql) {
+        return database.find(tableName, tClass, sql);
+    }
+
     public void save(String tableName, Object entity) {
         database.save(tableName, entity);
     }
 
     public <T, ID> Optional<T> findById(String tableName, Class<T> resultType, Class<ID> idType, ID idValue) {
         return database.findById(tableName, resultType, idType, idValue);
-    }
-
-    public <T> Optional<T> find(String tableName, SqlExpression expression, String puk) {
-        return Optional.empty();
     }
 
     private DataSource getDataSource(Properties properties) {
@@ -55,11 +63,11 @@ public class EntityManager {
         throw new IllegalArgumentException();
     }
 
-    public IDatabase getDatabase() {
-        return database.getType();
+    public String createSqlStringFromCriteria(Query query, String tableName) {
+       return database.createSqlStringFromCriteria(query, tableName);
     }
 
-    public <T> CriteriaBuilder<T> getCriteriaBuilderForObject(T object, String tableName) {
-        return new CriteriaBuilder<>(this, object, tableName);
+    public <T> CriteriaBuilder getCriteriaBuilderForSelect(Class<T> object) {
+        return CriteriaBuilder.select(new Root(object));
     }
 }
